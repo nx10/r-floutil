@@ -96,8 +96,9 @@ dotrepl <- function(s) {
 #' Note: Due to limitations of the "zip" package, all files in subfolders will be included and can not be filtered/ignored.
 #'
 #' @param path Path
-#' @param ignore_start Ignore paths that start with (e.g. c("plot") would exclude plot folder)
-#' @param ignore_end Ignore paths that end with (e.g. c(".pdf",".docx") would ignore pdfs and word documents)
+#' @param ignore_start Ignore paths that start with this
+#' @param ignore_end Ignore paths that end with this (e.g. c(".pdf",".docx") would ignore pdfs and word documents)
+#' @param ignore_end Ignore paths that are exactly this (e.g. c("plot") would exclude plot folder)
 #' @param dotreplace dots in ignore list are replaced with \\\\. to make them regex save.
 #'
 #' @return list of files to include in distribution package
@@ -113,10 +114,11 @@ get_dist_files <- function(path = getwd(),
       ".Ruserdata",
       ".utf8.md",
       ".knit.md",
-      ".tmp"
+      ".tmp",
+      ".Rcheck"
     ))
   ignore_start_default = dotrepl(c("~"))
-  ignore_full_default = dotrepl(c("dist",".RData",".git",".Rproj.user",".Rbuildignore"))
+  ignore_full_default = dotrepl(c("dist",".RData",".git",".Rproj.user",".Rbuildignore",".vscode",".Renviron"))
 
   if (dotreplace) {
     ignore_start <- dotrepl(ignore_start)

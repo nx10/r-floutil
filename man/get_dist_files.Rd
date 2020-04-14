@@ -15,9 +15,9 @@ get_dist_files(
 \arguments{
 \item{path}{Path}
 
-\item{ignore_start}{Ignore paths that start with (e.g. c("plot") would exclude plot folder)}
+\item{ignore_start}{Ignore paths that start with this}
 
-\item{ignore_end}{Ignore paths that end with (e.g. c(".pdf",".docx") would ignore pdfs and word documents)}
+\item{ignore_end}{Ignore paths that are exactly this (e.g. c("plot") would exclude plot folder)}
 
 \item{dotreplace}{dots in ignore list are replaced with \\\\. to make them regex save.}
 }
