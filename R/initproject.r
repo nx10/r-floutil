@@ -155,7 +155,7 @@ build <- function(path = getwd(), ...) {
   writeLines(paste0("Creating \'",dn,"\', include:"))
   fn <- get_dist_files(path = path, ...)
   writeLines(paste0(
-    apply(data.frame(path=dirs, isdir=dir.exists(dirs)),1,function(x) ifelse(x["isdir"],paste0("* ",x["path"],"/",dir(x["path"],all.files = T,no.. = T,recursive = T),collapse="\n"),paste0("* ",x["path"]))),
+    apply(data.frame(path=fn, isdir=dir.exists(fn)),1,function(x) ifelse(x["isdir"],paste0("* ",x["path"],"/",dir(x["path"],all.files = T,no.. = T,recursive = T),collapse="\n"),paste0("* ",x["path"]))),
     collapse="\n"))
   zip::zipr(
     dn,
