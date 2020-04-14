@@ -116,7 +116,7 @@ get_dist_files <- function(path = getwd(),
       ".tmp"
     ))
   ignore_start_default = dotrepl(c("~"))
-  ignore_full_default = dotrepl(c("dist",".RData"))
+  ignore_full_default = dotrepl(c("dist",".RData",".git",".Rproj.user",".Rbuildignore"))
 
   if (dotreplace) {
     ignore_start <- dotrepl(ignore_start)
@@ -132,7 +132,7 @@ get_dist_files <- function(path = getwd(),
     paste0(c(ignore_full_default, ignore_full), collapse = "|")
 
   fl <-
-    dir(path = path, recursive = F) # the zip package cant handyle subfolders unless they are included completely
+    dir(path = path, recursive = F, all.files = T,no.. = T) # the zip package cant handyle subfolders unless they are included completely
 
   fl[!grepl(paste0("^(",ff,")$|^(", ss, ")|(", ee, ")$"), fl)]
 }

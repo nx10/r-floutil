@@ -2,12 +2,13 @@
 % Please edit documentation in R/initproject.r
 \name{get_dist_files}
 \alias{get_dist_files}
-\title{Get list of files to include in distribution package}
+\title{Get list of files to include in distribution package.}
 \usage{
 get_dist_files(
   path = getwd(),
   ignore_start = c(),
   ignore_end = c(),
+  ignore_full = c(),
   dotreplace = T
 )
 }
@@ -24,5 +25,5 @@ get_dist_files(
 list of files to include in distribution package
 }
 \description{
-Get list of files to include in distribution package
+Note: Due to limitations of the "zip" package, all files in subfolders will be included and can not be filtered/ignored.
 }
