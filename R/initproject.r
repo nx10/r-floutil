@@ -4,13 +4,29 @@
 #'
 #' @export
 init <- function(dir = getwd()) {
-  touch_dir('data', dir)
-  touch_dir('literature', dir)
-  touch_dir('plot', dir)
-  touch_script('main.r', dir, 'source(\'data_load.r\')\nlibrary(ggplot2)\nsource(\'utils.r\')')
-  touch_script('utils.r', dir, '# helper <- function(x) { }')
-  touch_script('data_load.r', dir, '# readxl::read_excel(\'data/data.xlsx\')\n# readr::read_csv(\'data/data.csv\')')
-  writeLines(paste0('Initialized project in: \'',dir,'\''))
+  touch_dir("data", dir)
+  touch_dir("literature", dir)
+  touch_dir("plot", dir)
+  touch_script(
+    "main.r",
+    dir,
+    "source(\"data_load.r\")\nlibrary(ggplot2)\nsource(\"utils.r\")"
+  )
+  touch_script("utils.r", dir, "# helper <- function(x) { }")
+  touch_script(
+    "data_load.r",
+    dir,
+    "# readxl::read_excel(\"data/data.xlsx\")\n# readr::read_csv(\"data/data.csv\")"
+  )
+  touch_file(
+    ".gitignore",
+    dir,
+    paste0(
+      get_gitignore(),
+      "\n# Project structure\nplot/\nliterature/\ndata/\ndist/\n"
+    )
+  )
+  writeLines(paste0("Initialized project in: \"", dir, "\""))
 }
 
 #' Create folder if it does not exist.
@@ -30,11 +46,12 @@ touch_dir <- function(foldername, dir = getwd()) {
 #' @param dir Directory to create the file in
 #'
 #' @export
-touch_file <- function(filename, dir = getwd(), content = '') {
+touch_file <- function(filename,
+                       dir = getwd(),
+                       content = "") {
   if (!file.exists(filename)) {
-    writeLines(
-      text = content,
-      con = file.path(dir, filename))
+    writeLines(text = content,
+               con = file.path(dir, filename))
   }
 }
 
@@ -45,10 +62,83 @@ touch_file <- function(filename, dir = getwd(), content = '') {
 #' @param dir Directory to create the script in
 #'
 #' @export
-touch_script <- function(filename, dir = getwd(), content = '') {
-  if (!endsWith(tolower(filename), '.r')) {
-    filename <- paste0(filename, '.r')
+touch_script <- function(filename,
+                         dir = getwd(),
+                         content = "") {
+  if (!endsWith(tolower(filename), ".r")) {
+    filename <- paste0(filename, ".r")
   }
-  touch_file(filename, dir,
-             paste0('# ',filename,'\n# ',Sys.time(),'\n\n',content,'\n'))
+  touch_file(filename,
+             dir,
+             paste0("# ", filename, "\n# ", Sys.time(), "\n\n", content, "\n"))
+}
+
+#' Returns basic gitignore contents.
+#'
+#' @return Contents of R.gitignore
+#'
+get_gitignore <- function() {
+  gp <- system.file("extdata", "R.gitignore", package = "floutil")
+  paste(readLines(gp, warn = FALSE), collapse = "\n")
+}
+
+
+#' Get list of files to include in distribution package
+#'
+#' @param path Path
+#' @param ignore_start Ignore paths that start with (e.g. c("plot") would exclude plot folder)
+#' @param ignore_end Ignore paths that end with (e.g. c(".pdf",".docx") would ignore pdfs and word documents)
+#' @param dotreplace dots in ignore list are replaced with \\\\. to make them regex save.
+#'
+#' @return list of files to include in distribution package
+#'
+get_dist_files <- function(path = getwd(),
+                           ignore_start = c(),
+                           ignore_end = c(), dotreplace = T) {
+  ignore_end_default = gsub(".", "\\.", c(
+      ".Rproj",
+      ".Rhistory",
+      ".Rapp.history",
+      ".Ruserdata",
+      ".utf8.md",
+      ".knit.md"
+    ))
+  ignore_start_default = c("dist")
+
+  fl <-
+    dir(path = path, recursive = F) # the zip package cant handyle subfolders unless they are included completely
+
+  if (dotreplace) {
+    ignore_start <- gsub(".", "\\.", ignore_start, fixed = T)
+    ignore_end <- gsub(".", "\\.", ignore_end, fixed = T)
+  }
+
+  ss <-
+    paste0(c(ignore_start_default, ignore_start), collapse = "|")
+  ee <-
+    paste0(c(ignore_end_default, ignore_end), collapse = "|")
+
+  fl[!grepl(paste0("^(", ss, ")|(", ee, ")$"), fl)]
+}
+
+#' Build distribution package
+#'
+#' @param path Path
+#'
+#' @export
+build <- function(path = getwd(), ...) {
+  touch_dir("dist", path)
+  dn  <-
+    paste0("dist/",
+           basename(getwd()),
+           "_",
+           format(Sys.time(), "%y%m%d%H%M"),
+           ".zip")
+  fn <- get_dist_files(path = path, ...)
+  zip::zipr(
+    dn,
+    fn,
+    recurse = TRUE,
+    compression_level = 9
+  )
 }
