@@ -102,11 +102,8 @@ get_dist_files <- function(path = getwd(),
       ".Ruserdata",
       ".utf8.md",
       ".knit.md"
-    ))
+    ), fixed = T)
   ignore_start_default = c("dist")
-
-  fl <-
-    dir(path = path, recursive = F) # the zip package cant handyle subfolders unless they are included completely
 
   if (dotreplace) {
     ignore_start <- gsub(".", "\\.", ignore_start, fixed = T)
@@ -117,6 +114,9 @@ get_dist_files <- function(path = getwd(),
     paste0(c(ignore_start_default, ignore_start), collapse = "|")
   ee <-
     paste0(c(ignore_end_default, ignore_end), collapse = "|")
+
+  fl <-
+    dir(path = path, recursive = F) # the zip package cant handyle subfolders unless they are included completely
 
   fl[!grepl(paste0("^(", ss, ")|(", ee, ")$"), fl)]
 }
@@ -134,11 +134,12 @@ build <- function(path = getwd(), ...) {
            "_",
            format(Sys.time(), "%y%m%d%H%M"),
            ".zip")
+  writeLines(paste0("Creating \'",dn,"\', include:"))
   fn <- get_dist_files(path = path, ...)
+  writeLines(paste0("* ",fn))
   zip::zipr(
     dn,
     fn,
-    recurse = TRUE,
     compression_level = 9
   )
 }
