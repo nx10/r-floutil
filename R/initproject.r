@@ -82,8 +82,18 @@ get_gitignore <- function() {
   paste(readLines(gp, warn = FALSE), collapse = "\n")
 }
 
+#' dots in string are replaced with \\\\. to make them regex save.
+#'
+#' @param s String
+#'
+#' @return String
+dotrepl <- function(s) {
+  gsub(".", "\\.", s, fixed = T)
+}
 
-#' Get list of files to include in distribution package
+#' Get list of files to include in distribution package.
+#'
+#' Note: Due to limitations of the "zip" package, all files in subfolders will be included and can not be filtered/ignored.
 #'
 #' @param path Path
 #' @param ignore_start Ignore paths that start with (e.g. c("plot") would exclude plot folder)
@@ -94,8 +104,9 @@ get_gitignore <- function() {
 #'
 get_dist_files <- function(path = getwd(),
                            ignore_start = c(),
-                           ignore_end = c(), dotreplace = T) {
-  ignore_end_default = gsub(".", "\\.", c(
+                           ignore_end = c(),
+                           ignore_full = c(), dotreplace = T) {
+  ignore_end_default = dotrepl(c(
       ".Rproj",
       ".Rhistory",
       ".Rapp.history",
@@ -103,23 +114,27 @@ get_dist_files <- function(path = getwd(),
       ".utf8.md",
       ".knit.md",
       ".tmp"
-    ), fixed = T)
-  ignore_start_default = c("dist","~")
+    ))
+  ignore_start_default = dotrepl(c("~"))
+  ignore_full_default = dotrepl(c("dist",".RData"))
 
   if (dotreplace) {
-    ignore_start <- gsub(".", "\\.", ignore_start, fixed = T)
-    ignore_end <- gsub(".", "\\.", ignore_end, fixed = T)
+    ignore_start <- dotrepl(ignore_start)
+    ignore_end <- dotrepl(ignore_end)
+    ignore_full <- dotrepl(ignore_full)
   }
 
   ss <-
     paste0(c(ignore_start_default, ignore_start), collapse = "|")
   ee <-
     paste0(c(ignore_end_default, ignore_end), collapse = "|")
+  ff <-
+    paste0(c(ignore_full_default, ignore_full), collapse = "|")
 
   fl <-
     dir(path = path, recursive = F) # the zip package cant handyle subfolders unless they are included completely
 
-  fl[!grepl(paste0("^(", ss, ")|(", ee, ")$"), fl)]
+  fl[!grepl(paste0("^(",ff,")$|^(", ss, ")|(", ee, ")$"), fl)]
 }
 
 #' Build distribution package
@@ -137,7 +152,7 @@ build <- function(path = getwd(), ...) {
            ".zip")
   writeLines(paste0("Creating \'",dn,"\', include:"))
   fn <- get_dist_files(path = path, ...)
-  writeLines(paste0("* ",fn))
+  writeLines(paste0("* ",paste0(fn,ifelse(dir.exists(fn), "/*",""))))
   zip::zipr(
     dn,
     fn,
