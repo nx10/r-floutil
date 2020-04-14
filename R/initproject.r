@@ -23,7 +23,7 @@ init <- function(dir = getwd()) {
     dir,
     paste0(
       get_gitignore(),
-      "\n# Project structure\nplot/\nliterature/\ndata/\ndist/\n"
+      "\n\n# Project structure\nplot/\nliterature/\ndata/\ndist/"
     )
   )
   writeLines(paste0("Initialized project in: \"", dir, "\""))
