@@ -101,9 +101,10 @@ get_dist_files <- function(path = getwd(),
       ".Rapp.history",
       ".Ruserdata",
       ".utf8.md",
-      ".knit.md"
+      ".knit.md",
+      ".tmp"
     ), fixed = T)
-  ignore_start_default = c("dist")
+  ignore_start_default = c("dist","~")
 
   if (dotreplace) {
     ignore_start <- gsub(".", "\\.", ignore_start, fixed = T)
