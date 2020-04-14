@@ -154,10 +154,13 @@ build <- function(path = getwd(), ...) {
            ".zip")
   writeLines(paste0("Creating \'",dn,"\', include:"))
   fn <- get_dist_files(path = path, ...)
-  writeLines(paste0("* ",paste0(fn,ifelse(dir.exists(fn), "/*",""))))
+  writeLines(paste0(
+    apply(data.frame(path=dirs, isdir=dir.exists(dirs)),1,function(x) ifelse(x["isdir"],paste0("* ",x["path"],"/",dir(x["path"],all.files = T,no.. = T,recursive = T),collapse="\n"),paste0("* ",x["path"]))),
+    collapse="\n"))
   zip::zipr(
     dn,
     fn,
     compression_level = 9
   )
 }
+
