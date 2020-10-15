@@ -8,6 +8,6 @@ Description: Collection of commonly used helper functions for project management
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports:
     zip
