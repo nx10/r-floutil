@@ -3,7 +3,7 @@
 \name{detect_dependencies}
 \alias{detect_dependencies}
 \title{Lists all packages that get imported by an R script.
-Detects packages that are imported using library(package) 
+Detects packages that are imported using library(package)
 as well as with package::foo}
 \usage{
 detect_dependencies(file, recursive = TRUE)
@@ -17,6 +17,6 @@ Character vector of imported package names
 }
 \description{
 Lists all packages that get imported by an R script.
-Detects packages that are imported using library(package) 
+Detects packages that are imported using library(package)
 as well as with package::foo
 }

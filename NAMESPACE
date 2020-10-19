@@ -2,6 +2,8 @@
 
 export(build)
 export(detect_dependencies)
+export(detect_duplicate_functions)
+export(detect_unused_functions)
 export(gg)
 export(init)
 export(matchinfo)

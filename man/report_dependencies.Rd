@@ -3,7 +3,7 @@
 \name{report_dependencies}
 \alias{report_dependencies}
 \title{Lists all packages that get imported by an R script.
-Detects packages that are imported using library(package) 
+Detects packages that are imported using library(package)
 as well as with package::foo}
 \usage{
 report_dependencies(file, recursive = TRUE)
@@ -17,6 +17,6 @@ data.frame with attached version information for each package
 }
 \description{
 Lists all packages that get imported by an R script.
-Detects packages that are imported using library(package) 
+Detects packages that are imported using library(package)
 as well as with package::foo
 }

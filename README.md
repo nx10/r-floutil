@@ -38,10 +38,28 @@ floutil::matchinfo(idcol1, idcol2)
 
 Finds and displays duplicate IDs as well as IDs missing in either column.
 
-### List used packages
+### Static analysis
 
-Finds all used dependencies, will work recursively on `source("other_script.R")`.
+These functions will work recursively on `source("other_script.R")`.
+
+#### List used packages
 
 ```R
 floutil::report_dependencies("script.R")
+```
+
+#### List duplicate functions
+
+(make sure to check scoping manually)
+
+```R
+floutil::detect_duplicate_functions("script.R")
+```
+
+#### List unused functions
+
+(make sure to check scoping and functions as parameters (appy etc.) manually)
+
+```R
+floutil::detect_unused_functions("script.R")
 ```
